@@ -3,7 +3,7 @@ package common
 import (
 	"os"
 
-	"github.com/rutmir/go/core/logger"
+	"github.com/rutmir/go-core/logger"
 )
 
 // GetPropertyOrDefault ...

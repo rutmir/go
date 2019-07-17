@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/rutmir/go/core/logger"
+	"github.com/rutmir/go-core/logger"
 )
 
 var (
