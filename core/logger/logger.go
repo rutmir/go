@@ -22,7 +22,7 @@ const (
 	levelError   = 500
 	// LEVEL_CRITICAL  = 600
 	// LEVEL_ALERT     = 700
-	// LEVEL_EMERGENCY = 800
+	LEVEL_EMERGENCY = 800
 
 	targetStackdriver = "stackdriver"
 )
@@ -183,7 +183,16 @@ func Fatal(v ...interface{}) {
 	str := extractString(v...)
 	file, line := extractPath()
 
-	logFatal.Println(formatOutput(str, file, line))
+	defaultLogEntry(formatOutput(str, file, line), LEVEL_EMERGENCY, false, logFatal)
+	os.Exit(1)
+}
+
+// Fatalf ...
+func Fatalf(format string, v ...interface{}) {
+	str := fmt.Sprintf(format, v...)
+	file, line := extractPath()
+
+	defaultLogEntry(formatOutput(str, file, line), LEVEL_EMERGENCY, false, logFatal)
 	os.Exit(1)
 }
 
