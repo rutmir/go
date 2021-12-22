@@ -1,4 +1,4 @@
-module go-core
+module github.com/rutmir/go-core
 
 go 1.16
 
