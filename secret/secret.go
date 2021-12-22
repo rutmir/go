@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/rutmir/go-core/logger"
+	"../logger"
 )
 
 var (
@@ -20,7 +20,7 @@ func getValue(name string, panic bool) string {
 		if panic {
 			logger.Fatalf("Unable to read secret - %s", path)
 		} else {
-			logger.Errf("Unable to read secret -  %s", path)
+			logger.Warnf("Unable to read secret -  %s", path)
 		}
 	}
 	return string(secret)
