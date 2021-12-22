@@ -15,11 +15,11 @@ import (
 
 const (
 	// LEVEL_DEFAULT   = 0
-	levelDebug = 100
-	levelInfo  = 200
+	LEVEL_DEBUG = 100
+	LEVEL_INFO  = 200
 	// LEVEL_NOTICE    = 300
-	levelWarning = 400
-	levelError   = 500
+	LEVEL_WARNING = 400
+	LEVEL_ERROR   = 500
 	// LEVEL_CRITICAL  = 600
 	// LEVEL_ALERT     = 700
 	LEVEL_EMERGENCY = 800
@@ -60,11 +60,13 @@ func (le *LogEntry) JSON() string {
 		Err(err)
 		return ""
 	}
+
 	return string(b)
 }
 
 func (le LogEntry) String() string {
 	buffer := bytes.NewBufferString(le.Message)
+
 	for _, line := range le.Trace {
 		buffer.WriteString(fmt.Sprintf("\n\t-> [%s:%d] %s", line.File, line.Line, line.Name))
 	}
@@ -155,6 +157,7 @@ func extractPath() (string, int) {
 			file = split[len(split)-1]
 		}
 	}
+
 	return file, line
 }
 
@@ -176,6 +179,12 @@ func HTTPLogger(inner http.Handler, name string) http.Handler {
 		inner.ServeHTTP(w, r)
 		log.Printf("%s\t%s\t%s\t%s\n", r.Method, r.RequestURI, name, time.Since(start))
 	})
+}
+
+func FailOnError(err error, msg string) {
+	if err != nil {
+		Fatalf("%s: %s", msg, err)
+	}
 }
 
 // Fatal handler for LevelFatal
@@ -201,7 +210,7 @@ func Err(v ...interface{}) {
 	str := extractString(v...)
 	file, line := extractPath()
 
-	defaultLogEntry(formatOutput(str, file, line), levelError, false, logError)
+	defaultLogEntry(formatOutput(str, file, line), LEVEL_ERROR, false, logError)
 }
 
 // Errf ...
@@ -209,17 +218,17 @@ func Errf(format string, v ...interface{}) {
 	str := fmt.Sprintf(format, v...)
 	file, line := extractPath()
 
-	defaultLogEntry(formatOutput(str, file, line), levelError, false, logError)
+	defaultLogEntry(formatOutput(str, file, line), LEVEL_ERROR, false, logError)
 }
 
 // ErrTrace display error with trace
 func ErrTrace(err error) {
-	defaultLogEntry(fmt.Sprintf("%v", err), levelError, true, logError)
+	defaultLogEntry(fmt.Sprintf("%v", err), LEVEL_ERROR, true, logError)
 }
 
 // ErrTracef display error with trace
 func ErrTracef(format string, v ...interface{}) {
-	defaultLogEntry(fmt.Sprintf(format, v...), levelError, true, logError)
+	defaultLogEntry(fmt.Sprintf(format, v...), LEVEL_ERROR, true, logError)
 }
 
 // Warn ...
@@ -227,7 +236,7 @@ func Warn(v ...interface{}) {
 	str := extractString(v...)
 	file, line := extractPath()
 
-	defaultLogEntry(formatOutput(str, file, line), levelWarning, false, logWarning)
+	defaultLogEntry(formatOutput(str, file, line), LEVEL_WARNING, false, logWarning)
 }
 
 // Warnf ...
@@ -235,17 +244,17 @@ func Warnf(format string, v ...interface{}) {
 	str := fmt.Sprintf(format, v...)
 	file, line := extractPath()
 
-	defaultLogEntry(formatOutput(str, file, line), levelWarning, false, logWarning)
+	defaultLogEntry(formatOutput(str, file, line), LEVEL_WARNING, false, logWarning)
 }
 
 // WarnTrace ...
 func WarnTrace(err error) {
-	defaultLogEntry(fmt.Sprintf("%v", err), levelWarning, true, logWarning)
+	defaultLogEntry(fmt.Sprintf("%v", err), LEVEL_WARNING, true, logWarning)
 }
 
 // WarnTracef ...
 func WarnTracef(format string, v ...interface{}) {
-	defaultLogEntry(fmt.Sprintf(format, v...), levelWarning, true, logWarning)
+	defaultLogEntry(fmt.Sprintf(format, v...), LEVEL_WARNING, true, logWarning)
 }
 
 // Info ...
@@ -253,7 +262,7 @@ func Info(v ...interface{}) {
 	str := extractString(v...)
 	file, line := extractPath()
 
-	defaultLogEntry(formatOutput(str, file, line), levelInfo, false, logInfo)
+	defaultLogEntry(formatOutput(str, file, line), LEVEL_INFO, false, logInfo)
 }
 
 // Infof ...
@@ -261,27 +270,27 @@ func Infof(format string, v ...interface{}) {
 	str := fmt.Sprintf(format, v...)
 	file, line := extractPath()
 
-	defaultLogEntry(formatOutput(str, file, line), levelInfo, false, logInfo)
+	defaultLogEntry(formatOutput(str, file, line), LEVEL_INFO, false, logInfo)
 }
 
 // InfoTrace ...
 func InfoTrace(err error) {
-	defaultLogEntry(fmt.Sprintf("%v", err), levelInfo, true, logInfo)
+	defaultLogEntry(fmt.Sprintf("%v", err), LEVEL_INFO, true, logInfo)
 }
 
 // InfoTracef ...
 func InfoTracef(format string, v ...interface{}) {
-	defaultLogEntry(fmt.Sprintf(format, v...), levelInfo, true, logInfo)
+	defaultLogEntry(fmt.Sprintf(format, v...), LEVEL_INFO, true, logInfo)
 }
 
 // Debug ...
 func Debug(v ...interface{}) {
-	defaultLogEntry(extractString(v...), levelDebug, false, logDebug)
+	defaultLogEntry(extractString(v...), LEVEL_DEBUG, false, logDebug)
 }
 
 // Debugf ...
 func Debugf(format string, v ...interface{}) {
-	defaultLogEntry(fmt.Sprintf(format, v...), levelDebug, false, logDebug)
+	defaultLogEntry(fmt.Sprintf(format, v...), LEVEL_DEBUG, false, logDebug)
 }
 
 // Initialize ...
